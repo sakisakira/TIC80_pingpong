@@ -37,6 +37,7 @@ def TIC
 end
 
 # <TILES>
+# 000:3c00000000000000000000000000000000000000000000000000000000000000
 # 001:eccccccccc888888caaaaaaaca888888cacccccccacc0ccccacc0ccccacc0ccc
 # 002:ccccceee8888cceeaaaa0cee888a0ceeccca0ccc0cca0c0c0cca0c0c0cca0c0c
 # 003:eccccccccc888888caaaaaaaca888888cacccccccacccccccacc0ccccacc0ccc
