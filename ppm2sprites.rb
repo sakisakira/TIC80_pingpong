@@ -65,18 +65,36 @@ if indices.max > 3 then
     exit
 end
 
-# We assume BPP=2.
+# We assume BPP=2 from here.
 
-TWidth = 256 # It is width of BPP=2 sprites of TIC-80.
-height.times do |y_i|
+SpriteSize = [16, 8]
+def sprite2line(s_x, s_y, indices, width, height)
     line = ""
-    ([width, TWidth].min / 2).times do |x_i|
-        index = y_i * width + x_i * 2
-        i0 = indices[index]
-        i1 = indices[index + 1]
-        char = (i1.to_s + i0.to_s).to_i(4).to_s(16)
-        line += char
+    SpriteSize[1].times do |ly|
+        y = s_y * SpriteSize[1] + ly
+        (SpriteSize[0] / 2).times do |lx|
+            x = s_x * SpriteSize[0] + lx * 2
+            if x >= width or y >= height then
+                char = "0"
+            else
+                index = y * width + x
+                i0 = indices[index]
+                i1 = indices[index + 1]
+                char = (i1.to_s + i0.to_s).to_i(4).to_s(16)
+            end
+            line += char
+        end
     end
-    print line
-    print "0" * (TWidth / 2 - line.length), "\n"
+    line
+end
+
+SpriteCounts = [16, 16] # At most 16 x 16 = 256 sprites.
+SpriteCounts[1].times do |s_y|
+    SpriteCounts[0].times do |s_x|
+        sp_i = s_y * SpriteCounts[0] + s_x
+        print ("000" + sp_i.to_s)[-3, 3]
+        print ":"
+        print sprite2line(s_x, s_y, indices, width, height)
+        print "\n"
+    end
 end
