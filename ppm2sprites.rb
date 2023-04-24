@@ -91,10 +91,12 @@ end
 SpriteCounts = [16, 16] # At most 16 x 16 = 256 sprites.
 SpriteCounts[1].times do |s_y|
     SpriteCounts[0].times do |s_x|
+        body = sprite2line(s_x, s_y, indices, width, height)
+        break if body == "0" * 64
         sp_i = s_y * SpriteCounts[0] + s_x
         print ("000" + sp_i.to_s)[-3, 3]
         print ":"
-        print sprite2line(s_x, s_y, indices, width, height)
+        print body
         print "\n"
     end
 end
