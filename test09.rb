@@ -1,5 +1,5 @@
-# title:   game title
-# author:  game developer, email, etc.
+# title:   pingpong exercise
+# author:  sakira
 # desc:    short description
 # site:    website link
 # license: MIT License (change this to your license of choice)
@@ -16,10 +16,37 @@ Height=136
 ActDur=50
 
 def draw_table
-	rect(40,100,160,36,8)
-	tri(40,100,0,136,40,136,8)
-	tri(200,100,240,136,200,136,8)
-	circ(80,110,5,12)
+	t_w=120;t_h=36;col=8
+	x0=Width/2-t_w/2
+	y0=Height-t_h
+	rect(x0,y0,t_w,t_h,col)
+	tri(x0,y0,0,Height,x0,Height,col)
+	x1=Width/2+t_w/2
+	y1=y0
+	tri(x1,y1,Width,Height,x1,Height,col)
+end
+
+def draw_net
+	n_w=Width;n_h=18;blue=10;white=14
+	s_w=4
+	x0=Width/2-n_w/2
+	x1=Width/2+n_w/2
+	y0=Height-n_h
+	y1=Height
+	(n_w/s_w).times do |x_|
+		x=x_*s_w+2
+		line(x,y0,x,y1,blue)
+	end
+	(n_h/s_w).times do |y_|
+		y=y0+y_*s_w+2
+		line(x0,y,x1,y,blue)
+	end
+	rect(x0,y0,n_w,2,white)
+end
+
+def draw_ball
+	white=14
+	circ(80,110,5,white)
 	elli(80,120,6,2,7)
 end
 
@@ -40,18 +67,21 @@ def TIC
 	spr(256+fsidx*4,$x+16,$y+1,0,1,0,0,4,4)
 	
 	# draw body
- if bsidx<4 then
-  bsidx_=bsidx*4
- else
-  bsidx_=bsidx*4+48
- end
+	if bsidx<4 then
+		bsidx_=bsidx*4
+	else
+	bsidx_=bsidx*4+48
+	end
 	spr(bsidx_,$x,$y,0,2,0,0,4,4)
 
 	print("Yeah!",$x,$y-10)
 	$t+=1
 	print("Score: 003200",5,1,12)
 	print("Time: 02:29",180,1,12)
+	
 	draw_table
+	draw_ball
+	draw_net
 	
 	$tic+=1
 end
