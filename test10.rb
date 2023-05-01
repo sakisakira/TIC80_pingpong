@@ -6,18 +6,40 @@
 # version: 0.1
 # script:  ruby
 
-$t=0
-$x=96
-$y=24
-$tic=0
-
 Width=240
 Height=136
 ActDur=50
+DeltaTime=1.0/60.0
+DeclRatio=0.5**DeltaTime
 
 TableWidth=1.525 # in meter.
 TableDepth=2.74 # in meter
+NetHeight=0.1525 # in meter
+BallRadius=0.02 # in meter
 Gravity=9.8 # in m/s^2
+StandardSpeed=((TableWidth**2+TableDepth**2)**0.5)/0.5 # in m/s
+
+def BOOT
+	$t=0
+	$x=96
+	$y=24
+	$tic=0
+	$position=[TableWidth*0.4,TableDepth*(-0.5),0.1]
+	dir_x=TableWidth*0.8
+	dir_y=TableDepth
+	speed0=(dir_x**2+dir_y**2)**0.5
+	$velocity=[dir_x/speed0,dir_y/speed0,Gravity/4.0]
+end
+
+def update_ball
+	3.times do |i|
+		$position[i]+=$velocity[i]*DeltaTime
+	end
+	2.times do |i|
+		$velocity[i]*=DeclRatio
+	end
+	$velocity[2]-=Gravity*DeltaTime
+end
 
 def draw_table
 	t_w=120;t_h=36;col=8
