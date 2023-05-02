@@ -18,7 +18,7 @@ NetHeight=0.1525 # in meter
 BallRadius=0.02 # in meter
 EyeHeight=0.5 # in meter
 Gravity=9.8 # in m/s^2
-StandardSpeed=((TableWidth**2+TableDepth**2)**0.5)/0.5 # in m/s
+StandardSpeed=((TableWidth**2+TableDepth**2)**0.5)/0.7 # in m/s
 
 TableWidth2D=120 # pixel
 TableHeight2D=36 # pixel
@@ -37,8 +37,9 @@ def init_ball
 	$position=[TableWidth*0.4,0.0,0.1]
 	dir_x=TableWidth*0.8
 	dir_y=TableDepth
-	speed0=(dir_x**2+dir_y**2)**0.5
-	$velocity=[dir_x/speed0,dir_y/speed0,Gravity/4.0]
+	norm=(dir_x**2+dir_y**2)**0.5
+	ratio=StandardSpeed/norm
+	$velocity=[dir_x*ratio,dir_y*ratio,Gravity/4.0]
 end
 
 def update_ball
@@ -51,7 +52,7 @@ def update_ball
 	$velocity[2]-=Gravity*DeltaTime
 	if $position[2]<=0 then
 		$position[2]*=-1
-		$velocity[2]*=-1
+		$velocity[2]*=-0.8
 	end
 	
 	init_ball if $position[1]>=TableDepth
