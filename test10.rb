@@ -10,21 +10,31 @@ Width=240
 Height=136
 ActDur=50
 DeltaTime=1.0/60.0
-DeclRatio=0.5**DeltaTime
+DeclRatio=0.8**DeltaTime
 
 TableWidth=1.525 # in meter.
 TableDepth=2.74 # in meter
 NetHeight=0.1525 # in meter
 BallRadius=0.02 # in meter
+EyeHeight=0.5 # in meter
 Gravity=9.8 # in m/s^2
 StandardSpeed=((TableWidth**2+TableDepth**2)**0.5)/0.5 # in m/s
+
+TableWidth2D=120 # pixel
+TableHeight2D=36 # pixel
+BallRadius2D=BallRadius*TableWidth2D/TableWidth
+EyeHeight2D=EyeHeight*TableWidth2D/TableWidth
 
 def BOOT
 	$t=0
 	$x=96
 	$y=24
 	$tic=0
-	$position=[TableWidth*0.4,TableDepth*(-0.5),0.1]
+	init_ball
+end
+
+def init_ball
+	$position=[TableWidth*0.4,0.0,0.1]
 	dir_x=TableWidth*0.8
 	dir_y=TableDepth
 	speed0=(dir_x**2+dir_y**2)**0.5
@@ -39,10 +49,19 @@ def update_ball
 		$velocity[i]*=DeclRatio
 	end
 	$velocity[2]-=Gravity*DeltaTime
+	if $position[2]<=0 then
+		$position[2]*=-1
+		$velocity[2]*=-1
+	end
+	
+	init_ball if $position[1]>=TableDepth
+	
+	trace($position.to_s + " " + $velocity.to_s)
 end
 
 def draw_table
-	t_w=120;t_h=36;col=8
+	t_w=TableWidth2D;t_h=TableHeight2D
+	col=8
 	x0=Width/2-t_w/2
 	y0=Height-t_h
 	rect(x0,y0,t_w,t_h,col)
@@ -71,6 +90,19 @@ def draw_net
 end
 
 def draw_ball
+	white=14
+	dist=$position[1]
+	return if dist<TableDepth/4
+	ratio=TableDepth/dist
+	r=ratio*BallRadius2D
+	x=TableWidth2D/2+$position[0]/TableWidth*TableWidth2D*ratio
+	y0=$position[2]/TableWidth*TableWidth2D*ratio
+	y1=ratio*EyeHeight2D
+	y=Height-EyeHeight2D-TableHeight2D+y1-y0
+	circ(x-r/2,y-r/2,r,white)
+end
+
+def draw_ball_
 	white=14
 	circ(80,110,5,white)
 	elli(80,120,6,2,7)
@@ -104,6 +136,8 @@ def TIC
 	$t+=1
 	print("Score: 003200",5,1,12)
 	print("Time: 02:29",180,1,12)
+	
+	update_ball
 	
 	draw_table
 	draw_ball
