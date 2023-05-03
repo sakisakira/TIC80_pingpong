@@ -111,7 +111,7 @@ def draw_net
 end
 
 def draw_ball
-	white=14
+	white=14;black=15
 	dist=$position[1]
 	return if dist<TableDepth/8
 	ratio=TableDepth/dist
@@ -120,13 +120,9 @@ def draw_ball
 	y0=$position[2]/TableWidth*TableWidth2D*ratio
 	y1=ratio*EyeHeight2D
 	y=Height-EyeHeight2D-TableHeight2D+y1-y0
-	circ(x-r/2,y-r/2,r,white)
-end
-
-def draw_ball_
-	white=14
-	circ(80,110,5,white)
-	elli(80,120,6,2,7)
+	sy=Height-EyeHeight2D-TableHeight2D+y1
+	elli(x-r/2,sy-r/2,r,r/2,black)
+	circ(x-r/2,y-r/4,r,white)
 end
 
 def TIC
@@ -161,8 +157,13 @@ def TIC
 	update_ball
 	
 	draw_table
-	draw_ball
-	draw_net
+	if $position[1]>=TableDepth/2 then
+		draw_ball
+		draw_net
+	else
+		draw_net
+		draw_ball
+	end
 	
 	$tic+=1
 end
@@ -335,7 +336,7 @@ end
 # </TRACKS>
 
 # <PALETTE>
-# 000:1a1c2c6161aeffcab6e22024ba7128f24044d26528bed2ff29a524859dde41a6f673c6d6ffcab6faaa8df6ffff404440
+# 000:1a1c2c9595beffcab6e22024ba7128f24044d26528bed2ff29a524859dde41a6f673c6d6ffcab6faaa8df6ffff404440
 # 001:08000000550000814cff0000000000000000000000000000000000000000000000000000000000000000000000000000
 # </PALETTE>
 
