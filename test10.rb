@@ -36,16 +36,25 @@ def BOOT
 	$x=96
 	$y=24
 	$tic=0
-	init_ball
+	init_ball(true)
 end
 
-def init_ball
-	$position=[TableWidth*0.4,0.0,0.1]
-	dir_x=TableWidth*(-0.8)
-	dir_y=TableDepth
-	norm=(dir_x**2+dir_y**2)**0.5
-	ratio=StandardSpeed/norm
-	$velocity=[dir_x*ratio,dir_y*ratio,Gravity/4.0]
+def init_ball(forward)
+	if forward then
+		$position=[TableWidth*0.4,0.0,0.1]
+		dir_x=TableWidth*(-0.8)
+		dir_y=TableDepth
+		norm=(dir_x**2+dir_y**2)**0.5
+		ratio=StandardSpeed/norm
+		$velocity=[dir_x*ratio,dir_y*ratio,Gravity/4.0]
+	else
+		$position=[TableWidth*(-0.4),TableDepth,0.1]
+		dir_x=TableWidth*0.8
+		dir_y=-TableDepth
+		norm=(dir_x**2+dir_y**2)**0.5
+		ratio=StandardSpeed/norm
+		$velocity=[dir_x*ratio,dir_y*ratio,Gravity/4.0]
+	end
 end
 
 def update_ball
@@ -61,7 +70,11 @@ def update_ball
 		$velocity[2]*=-0.8
 	end
 	
-	init_ball if $position[1]>=TableDepth
+	if $position[1]>TableDepth then
+		init_ball(false)
+	elsif $position[1]<0 then
+		init_ball(true)
+	end
 end
 
 def draw_table
