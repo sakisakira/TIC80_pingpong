@@ -6,6 +6,12 @@
 # version: 0.1
 # script:  ruby
 
+class Float
+    def fmt
+        sprintf("%.5f", self)
+    end
+end
+
 Width=240
 Height=136
 ActDur=50
@@ -35,7 +41,7 @@ end
 
 def init_ball
 	$position=[TableWidth*0.4,0.0,0.1]
-	dir_x=TableWidth*0.8
+	dir_x=TableWidth*(-0.8)
 	dir_y=TableDepth
 	norm=(dir_x**2+dir_y**2)**0.5
 	ratio=StandardSpeed/norm
@@ -57,7 +63,8 @@ def update_ball
 	
 	init_ball if $position[1]>=TableDepth
 	
-	trace($position.to_s + " " + $velocity.to_s)
+	trace("pos:" + $position.to_s)
+#	trace("vel:" + $velocity.to_s)
 end
 
 def draw_table
