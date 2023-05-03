@@ -100,10 +100,10 @@ end
 def draw_ball
 	white=14
 	dist=$position[1]
-	return if dist<TableDepth/4
+	return if dist<TableDepth/8
 	ratio=TableDepth/dist
 	r=ratio*BallRadius2D
-	x=TableWidth2D/2+$position[0]/TableWidth*TableWidth2D*ratio
+	x=Width/2+$position[0]/TableWidth*TableWidth2D*ratio
 	y0=$position[2]/TableWidth*TableWidth2D*ratio
 	y1=ratio*EyeHeight2D
 	y=Height-EyeHeight2D-TableHeight2D+y1-y0
