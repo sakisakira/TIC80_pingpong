@@ -62,9 +62,6 @@ def update_ball
 	end
 	
 	init_ball if $position[1]>=TableDepth
-	
-	trace("pos:" + $position.to_s)
-#	trace("vel:" + $velocity.to_s)
 end
 
 def draw_table
