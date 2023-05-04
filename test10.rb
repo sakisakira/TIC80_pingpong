@@ -14,7 +14,6 @@ end
 
 Width=240
 Height=136
-ActDur=50
 DeltaTime=1.0/60.0
 DeclRatio=0.8**DeltaTime
 
@@ -36,6 +35,7 @@ def BOOT
 	$x=96
 	$y=24
 	$tic=0
+	$action_tics=40
 	init_ball(true)
 end
 
@@ -126,12 +126,14 @@ def draw_ball
 end
 
 def sprite_indices
-	fsidx=($tic%ActDur)/8
-	fsidx=2 if fsidx>2
-	face_index=256+fsidx*4
+	atics=$action_tics.to_i
+	ltic=$tic%atics
+	ratio=ltic.to_f/atics.to_f
 	
-	bsidx=($tic%ActDur)/5
-	bsidx=7 if bsidx>7
+	fsidx=[(ratio*5).to_i,2].min
+	bsidx=[(ratio*8).to_i,7].min
+
+	face_index=256+fsidx*4
 	body_index=if bsidx<4 then
 		bsidx*4
 	else
