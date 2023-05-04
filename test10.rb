@@ -125,30 +125,39 @@ def draw_ball
 	circ(x-r/2,y-r/4,r,white)
 end
 
+def sprite_indices
+	fsidx=($tic%ActDur)/8
+	fsidx=2 if fsidx>2
+	face_index=256+fsidx*4
+	
+	bsidx=($tic%ActDur)/5
+	bsidx=7 if bsidx>7
+	body_index=if bsidx<4 then
+		bsidx*4
+	else
+		bsidx*4+48
+	end
+
+	[face_index,body_index]
+end
+
+def draw_girl(fsidx,bsidx)
+	spr(fsidx,$x+16,$y+1,0,1,0,0,4,4)
+	spr(bsidx,$x,$y,0,2,0,0,4,4)
+end
+
 def TIC
 	$y-=1 if btn 0
 	$y+=1 if btn 1
 	$x-=1 if btn 2
 	$x+=1 if btn 3
 	
-	fsidx=($tic%ActDur)/8
-	fsidx=2 if fsidx>2
-	bsidx=($tic%ActDur)/5
-	bsidx=7 if bsidx>7
-
+	fsidx,bsidx=sprite_indices
+	
 	cls(1)
 	
-	# draw head
-	spr(256+fsidx*4,$x+16,$y+1,0,1,0,0,4,4)
+	draw_girl(fsidx,bsidx)
 	
-	# draw body
-	if bsidx<4 then
-		bsidx_=bsidx*4
-	else
-	bsidx_=bsidx*4+48
-	end
-	spr(bsidx_,$x,$y,0,2,0,0,4,4)
-
 	print("Yeah!",$x,$y-10)
 	$t+=1
 	print("Score: 003200",5,1,12)
