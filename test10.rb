@@ -31,11 +31,11 @@ BallRadius2D=BallRadius*TableWidth2D/TableWidth
 EyeHeight2D=EyeHeight*TableWidth2D/TableWidth
 
 def BOOT
-	$t=0
 	$x=96
 	$y=24
 	$tic=0
 	$action_tics=40
+	$in_swing=false
 	init_ball(true)
 end
 
@@ -125,9 +125,20 @@ def draw_ball
 	circ(x-r/2,y-r/4,r,white)
 end
 
+def swing_tics
+	return nil if $in_swing
+	sign=$velocity[1]<=>0
+	if ($position[1]-TableDepth/2)*sign<0 then
+		$in_swing=true
+		return (TableDepth/$velocity[1].abs).to_i
+	end
+	return nil
+end
+
 def sprite_indices
 	atics=$action_tics.to_i
 	ltic=$tic%atics
+	$in_swing=false if ltic==atics-1
 	ratio=ltic.to_f/atics.to_f
 	
 	fsidx=[(ratio*5).to_i,2].min
@@ -161,7 +172,6 @@ def TIC
 	draw_girl(fsidx,bsidx)
 	
 	print("Yeah!",$x,$y-10)
-	$t+=1
 	print("Score: 003200",5,1,12)
 	print("Time: 02:29",180,1,12)
 	
