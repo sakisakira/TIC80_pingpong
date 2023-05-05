@@ -159,8 +159,20 @@ def update_swing_status
 end
 
 def update_impact_position(tics)
-	bx=$position[0]+$velocity[0]*tics*DeltaTime
-	##### working 2023.05.05 20:18
+	# left-right coordinate
+	x_b=$position[0]+$velocity[0]*tics*DeltaTime
+	# vertical coordinate
+	v0=$velocity[1]
+	h0=$position[1]
+	t1=(v0+(v0*v0+2*Gravity*h0)**0.5)/Gravity # landing time
+	v1=ReflectionCoef*(v0**v0+2*Gravity*h0)
+	dt=tics*DeltaTime-t1
+	h2=v1*dt-0.5*Gravity*dt*dt
+	y_b=h2
+	# position in screen
+	x=Width/2+x_b/TableWidth*TableWidth2D
+	y=Height-TableHeight2D-y_b/TableWidth*TableWidth2D
+	[x,y]
 end
 
 
