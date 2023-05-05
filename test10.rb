@@ -24,12 +24,14 @@ NetHeight=0.1525 # in meter
 BallRadius=0.02 # in meter
 EyeHeight=0.5 # in meter
 Gravity=9.8 # in m/s^2
+ReflectionCoef=0.8
 StandardSpeed=((TableWidth**2+TableDepth**2)**0.5)/0.7 # in m/s
 
 TableWidth2D=120 # pixel
 TableHeight2D=36 # pixel
 BallRadius2D=BallRadius*TableWidth2D/TableWidth
 EyeHeight2D=EyeHeight*TableWidth2D/TableWidth
+ImpactPosInSprite=[5,20]
 
 def BOOT
 	$x=96
@@ -69,7 +71,7 @@ def update_ball
 	$velocity[2]-=Gravity*DeltaTime
 	if $position[2]<=0 then
 		$position[2]*=-1
-		$velocity[2]*=-0.8
+		$velocity[2]*=-ReflectionCoef
 		sfx(16,"C-3")
 	end
 	
@@ -151,9 +153,16 @@ def update_swing_status
 		return if !tics
 		$action_tics=tics
 		$action_start_tic=$tic
+		update_impact_position(tics)
 		$in_swing=true
 	end
 end
+
+def update_impact_position(tics)
+	bx=$position[0]+$velocity[0]*tics*DeltaTime
+	##### working 2023.05.05 20:18
+end
+
 
 def sprite_indices
 	atics=$action_tics.to_i
