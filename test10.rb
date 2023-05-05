@@ -14,7 +14,8 @@ end
 
 Width=240
 Height=136
-DeltaTime=1.0/60.0
+TicPerSec=60
+DeltaTime=1.0/TicPerSec
 DeclRatio=0.8**DeltaTime
 
 TableWidth=1.525 # in meter.
@@ -35,6 +36,7 @@ def BOOT
 	$y=24
 	$tic=0
 	$action_tics=40
+	$action_start_tic=0
 	$in_swing=false
 	init_ball(true)
 end
@@ -127,18 +129,37 @@ end
 
 def swing_tics
 	return nil if $in_swing
-	sign=$velocity[1]<=>0
-	if ($position[1]-TableDepth/2)*sign<0 then
-		$in_swing=true
-		return (TableDepth/$velocity[1].abs).to_i
+	return nil if $velocity[1]<=0
+	if $position[1]-TableDepth/2>0 then
+		return (TableDepth/$velocity[1].abs*TicPerSec).ceil
+	else
+		return nil
 	end
-	return nil
+end
+
+def tic_in_action
+	$tic-$action_start_tic
+end
+
+def update_swing_status
+	if $in_swing then
+		atics=$action_tics.to_i
+		ltic=tic_in_action%atics
+		$in_swing=false if ltic==atics-1
+	else
+		tics = swing_tics
+		return if !tics
+		$action_tics=tics
+		$action_start_tic=$tic
+		$in_swing=true
+	end
 end
 
 def sprite_indices
 	atics=$action_tics.to_i
-	ltic=$tic%atics
-	$in_swing=false if ltic==atics-1
+	ltic=tic_in_action%atics
+	ltic=atics/2 unless $in_swing
+	
 	ratio=ltic.to_f/atics.to_f
 	
 	fsidx=[(ratio*5).to_i,2].min
@@ -165,6 +186,7 @@ def TIC
 	$x-=1 if btn 2
 	$x+=1 if btn 3
 	
+	update_swing_status
 	fsidx,bsidx=sprite_indices
 	
 	cls(1)
