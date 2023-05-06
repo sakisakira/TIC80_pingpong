@@ -7,12 +7,6 @@
 # version: 0.1
 # script:  ruby
 
-class Float
-    def fmt
-        sprintf("%.5f", self)
-    end
-end
-
 Width=240
 Height=136
 TicPerSec=60
@@ -32,16 +26,21 @@ TableWidth2D=120 # pixel
 TableHeight2D=36 # pixel
 BallRadius2D=BallRadius*TableWidth2D/TableWidth
 EyeHeight2D=EyeHeight*TableWidth2D/TableWidth
-ImpactPosInSprite=[5,20]
+ImpactPosInSprite=[10,36]
+
+class Float
+    def fmt
+        sprintf("%.5f", self)
+    end
+end
 
 def BOOT
-	$x=96
-	$y=24
 	$tic=0
 	$action_tics=40
 	$action_start_tic=0
 	$in_swing=false
 	$target_impact_pos=[69,67]
+	$girl_pos=$target_impact_pos.zip(ImpactPosInSprite).map{|a,b| a+b}
 	init_ball(true)
 end
 
@@ -178,6 +177,10 @@ def update_impact_position(tics)
 	$target_impact_pos=[x,y]
 end
 
+def update_girl_position
+	$girl_pos=$target_impact_pos
+end
+
 def sprite_indices
 	atics=$action_tics.to_i
 	ltic=tic_in_action%atics
@@ -199,24 +202,22 @@ def sprite_indices
 end
 
 def draw_girl(fsidx,bsidx)
-	spr(fsidx,$x+16,$y+1,0,1,0,0,4,4)
-	spr(bsidx,$x,$y,0,2,0,0,4,4)
+	x=$girl_pos[0].to_i-ImpactPosInSprite[0]
+	y=$girl_pos[1].to_i-ImpactPosInSprite[1]
+	spr(fsidx,x+16,y+1,0,1,0,0,4,4)
+	spr(bsidx,x,y,0,2,0,0,4,4)
 end
 
 def TIC
-	$y-=1 if btn 0
-	$y+=1 if btn 1
-	$x-=1 if btn 2
-	$x+=1 if btn 3
-	
 	update_swing_status
+	update_girl_position
 	fsidx,bsidx=sprite_indices
 	
 	cls(1)
 	
 	draw_girl(fsidx,bsidx)
 	
-	print("Yeah!",$x,$y-10)
+	print("Yeah!",$girl_pos[0],$girl_pos[1]-40)
 	print("Score: 003200",5,1,12)
 	print("Time: 02:29",180,1,12)
 	
