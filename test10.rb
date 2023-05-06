@@ -1,3 +1,4 @@
+# -*- tab-width : 4; indent-tabs-mode : t -*-
 # title:   pingpong exercise
 # author:  sakira
 # desc:    short description
@@ -40,6 +41,7 @@ def BOOT
 	$action_tics=40
 	$action_start_tic=0
 	$in_swing=false
+	$target_impact_pos=[69,67]
 	init_ball(true)
 end
 
@@ -159,22 +161,22 @@ def update_swing_status
 end
 
 def update_impact_position(tics)
+	t2=tics/2*DeltaTime # impact time
 	# left-right coordinate
-	x_b=$position[0]+$velocity[0]*tics*DeltaTime
+	x_b=$position[0]+$velocity[0]*t2
 	# vertical coordinate
-	v0=$velocity[1]
-	h0=$position[1]
+	v0=$velocity[2]
+	h0=$position[2]
 	t1=(v0+(v0*v0+2*Gravity*h0)**0.5)/Gravity # landing time
-	v1=ReflectionCoef*(v0**v0+2*Gravity*h0)
-	dt=tics*DeltaTime-t1
+	v1=ReflectionCoef*((v0*v0+2*Gravity*h0)**0.5)
+	dt=t2-t1
 	h2=v1*dt-0.5*Gravity*dt*dt
 	y_b=h2
 	# position in screen
 	x=Width/2+x_b/TableWidth*TableWidth2D
 	y=Height-TableHeight2D-y_b/TableWidth*TableWidth2D
-	[x,y]
+	$target_impact_pos=[x,y]
 end
-
 
 def sprite_indices
 	atics=$action_tics.to_i
