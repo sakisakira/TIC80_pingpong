@@ -39,7 +39,7 @@ def BOOT
 	$action_tics=40
 	$action_start_tic=0
 	$in_swing=false
-	$target_impact_pos=[69,67]
+	$target_impact_pos=[60,10]
 	$girl_pos=$target_impact_pos.zip(ImpactPosInSprite).map{|a,b| a+b}
 	init_ball(true)
 end
@@ -178,7 +178,21 @@ def update_impact_position(tics)
 end
 
 def update_girl_position
-	$girl_pos=$target_impact_pos
+	return unless $in_swing
+	ltic=tic_in_action
+	itic=$action_tics/2
+	rem_tic=itic-ltic
+	if rem_tic<=0 then
+		$girl_pos=$target_impact_pos.zip(ImpactPosInSprite).map{|a,b|a-b}
+		return
+	end
+	
+	target_girl_pos=$target_impact_pos.zip(ImpactPosInSprite).map{|a,b|a-b}
+	2.times do |i|
+		diff=target_girl_pos[i]-$girl_pos[i]
+		diff/=rem_tic
+		$girl_pos[i]=$girl_pos[i]+diff
+	end
 end
 
 def sprite_indices
@@ -202,8 +216,8 @@ def sprite_indices
 end
 
 def draw_girl(fsidx,bsidx)
-	x=$girl_pos[0].to_i-ImpactPosInSprite[0]
-	y=$girl_pos[1].to_i-ImpactPosInSprite[1]
+	x=$girl_pos[0]
+	y=$girl_pos[1]
 	spr(fsidx,x+16,y+1,0,1,0,0,4,4)
 	spr(bsidx,x,y,0,2,0,0,4,4)
 end
@@ -217,7 +231,7 @@ def TIC
 	
 	draw_girl(fsidx,bsidx)
 	
-	print("Yeah!",$girl_pos[0],$girl_pos[1]-40)
+	print("Yeah!",$girl_pos[0],$girl_pos[1]-10)
 	print("Score: 003200",5,1,12)
 	print("Time: 02:29",180,1,12)
 	
