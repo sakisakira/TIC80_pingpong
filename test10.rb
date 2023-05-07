@@ -29,9 +29,9 @@ EyeHeight2D=EyeHeight*TableWidth2D/TableWidth
 ImpactPosInSprite=[10,36]
 
 class Float
-    def fmt
-        sprintf("%.5f", self)
-    end
+	def fmt
+		sprintf("%.5f", self)
+	end
 end
 
 def BOOT
@@ -220,6 +220,14 @@ def draw_girl(fsidx,bsidx)
 	y=$girl_pos[1]
 	spr(fsidx,x+16,y+1,0,1,0,0,4,4)
 	spr(bsidx,x,y,0,2,0,0,4,4)
+end
+
+def is_on_receive_timing
+	return nil if $velocity[1]>=0
+	threshold=TableDepth/8
+	diff=$position[1].abs
+	return nil if diff>=threshold
+	return 1.0-diff/threshold
 end
 
 def TIC
