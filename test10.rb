@@ -12,6 +12,7 @@ Height=136
 TicPerSec=60
 DeltaTime=1.0/TicPerSec
 DeclRatio=0.8**DeltaTime
+BtnAId=4
 
 TableWidth=1.525 # in meter.
 TableDepth=2.74 # in meter
@@ -41,6 +42,7 @@ def BOOT
 	$in_swing=false
 	$target_impact_pos=[60,10]
 	$girl_pos=$target_impact_pos.zip(ImpactPosInSprite).map{|a,b| a+b}
+	$btn_a_press_start_tic=nil
 	init_ball(true)
 end
 
@@ -222,12 +224,23 @@ def draw_girl(fsidx,bsidx)
 	spr(bsidx,x,y,0,2,0,0,4,4)
 end
 
-def is_on_receive_timing
+def receive_timing_diff
 	return nil if $velocity[1]>=0
 	threshold=TableDepth/8
-	diff=$position[1].abs
-	return nil if diff>=threshold
-	return 1.0-diff/threshold
+	diff=$position[1]
+	return nil if diff.abs>=threshold
+	return -diff/threshold
+end
+
+def check_receiving
+	btn_pressed=btn(BtnAId)
+	if $btn_a_press_start_tic then
+		if not btn_pressed then
+			###### working 2023.05.07 23:02
+		end
+	else
+	end
+	###### working 2023.05.07 18:58
 end
 
 def TIC
