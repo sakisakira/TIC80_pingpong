@@ -28,6 +28,7 @@ TableHeight2D=36 # pixel
 BallRadius2D=BallRadius*TableWidth2D/TableWidth
 EyeHeight2D=EyeHeight*TableWidth2D/TableWidth
 ImpactPosInSprite=[10,36]
+StandardSwingTic=30.0
 
 class Float
 	def fmt
@@ -236,14 +237,23 @@ def check_receiving
 	btn_pressed=btn(BtnAId)
 	if $btn_a_press_start_tic then
 		if not btn_pressed then
+			tics=$tic-$btn_a_press_start_tic
+			$btn_a_press_start_tic=nil
+			swing_spd=[tics/StandardSwingTic,1.0].min
+			trace("swing_spd:" + swing_spd.fmt)
 			###### working 2023.05.07 23:02
 		end
 	else
+		if btn_pressed then
+			$btn_a_press_start_tic=$tic
+		end
 	end
 	###### working 2023.05.07 18:58
 end
 
 def TIC
+	check_receiving
+
 	update_swing_status
 	update_girl_position
 	fsidx,bsidx=sprite_indices
