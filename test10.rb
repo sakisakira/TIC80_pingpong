@@ -65,6 +65,24 @@ def init_ball(forward)
 	end
 end
 
+def hit_ball(forward, timing, swing)
+	return if !timing or !swing
+	cur_x=$position[0]
+	cur_y=$position[1]
+	if forward then
+		tar_x=(timing-0.5)*TableWidth*0.8
+		tar_y=TableDepth
+		dir_x=tar_x-cur_x
+		dir_y=tar_y-cur_y
+		norm=(dir_x**2+dir_y**2)**0.5
+		speed=(swing+0.5)*StandardSpeed
+		ratio=speed/norm
+		$velocity=[dir_x*ratio,dir_y*ratio,Gravity/4.0]
+	else
+		# working 2023.05.15
+	end
+end
+
 def update_ball
 	3.times do |i|
 		$position[i]+=$velocity[i]*DeltaTime
@@ -233,22 +251,30 @@ def receive_timing_diff
 	return -diff/threshold
 end
 
-def check_receiving
+def swing_strength
 	btn_pressed=btn(BtnAId)
 	if $btn_a_press_start_tic then
 		if not btn_pressed then
 			tics=$tic-$btn_a_press_start_tic
 			$btn_a_press_start_tic=nil
 			swing_spd=[tics/StandardSwingTic,1.0].min
-			trace("swing_spd:" + swing_spd.fmt)
-			###### working 2023.05.07 23:02
+			return swing_spd
 		end
 	else
 		if btn_pressed then
 			$btn_a_press_start_tic=$tic
 		end
 	end
-	###### working 2023.05.07 18:58
+	return nil
+end
+
+def check_receiving
+	swing=swing_strength
+	return if !swing
+	timing=receive_timing_diff
+	return if !timing
+	
+	hit_ball(true, timing, swing)
 end
 
 def TIC
