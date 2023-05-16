@@ -77,7 +77,11 @@ def hit_ball(forward, timing, swing)
 		norm=(dir_x**2+dir_y**2)**0.5
 		speed=(swing+0.5)*StandardSpeed
 		ratio=speed/norm
-		$velocity=[dir_x*ratio,dir_y*ratio,Gravity/4.0]
+		speed_x=dir_x*ratio
+		speed_y=dir_y*ratio
+		t_h=(tar_y/2-cur_y)/speed_y
+		speed_z=(2*NetHeight-cur_y)/t_h+Gravity*t_h/2
+		$velocity=[speed_x,speed_y,speed_z]
 	else
 		# working 2023.05.15
 	end
