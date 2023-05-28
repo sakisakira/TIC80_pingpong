@@ -21,6 +21,7 @@ BallRadius=0.02 # in meter
 EyeHeight=0.5 # in meter
 Gravity=9.8 # in m/s^2
 ReflectionCoef=0.8
+HitHeight=0.2 # in meter
 StandardSpeed=((TableWidth**2+TableDepth**2)**0.5)/0.7 # in m/s
 
 TableWidth2D=120 # pixel
@@ -65,6 +66,25 @@ def init_ball(forward)
 	end
 end
 
+def hit_ball_z_speed
+	cur_y=$position[1]
+	a=HitHeight/(ReflectionCoef**2)-cur_y
+	if a<=0 then
+		return 0.0
+	else
+		return (2*Gravity*a)**0.5
+	end
+end
+
+def hit_ball_y_speed(z_speed)
+	cur_z=$position[2]
+	alpha=(z_speed**2+2*Gravity*cur_z)**0.5
+	t1=(z_speed+alpha)/Gravity
+	t2=ReflectionCoef/Gravity*alpha
+	t=t1+t2
+	TableDepth/t
+end
+
 def hit_ball(forward, timing, swing)
 	return if !timing or !swing
 	cur_x=$position[0]
@@ -74,13 +94,9 @@ def hit_ball(forward, timing, swing)
 		tar_y=TableDepth
 		dir_x=tar_x-cur_x
 		dir_y=tar_y-cur_y
-		norm=(dir_x**2+dir_y**2)**0.5
-		speed=(swing+0.5)*StandardSpeed
-		ratio=speed/norm
-		speed_x=dir_x*ratio
-		speed_y=dir_y*ratio
-		t_h=(tar_y/2-cur_y)/speed_y
-		speed_z=(2*NetHeight-cur_y)/t_h+Gravity*t_h/2
+		speed_z=hit_ball_z_speed
+		speed_y=hit_ball_y_speed(speed_z)
+		speed_x=speed_y*dir_x/dir_y
 		$velocity=[speed_x,speed_y,speed_z]
 	else
 		# working 2023.05.15
@@ -105,8 +121,8 @@ def update_ball
 		init_ball(false)
 		sfx(17,"F-5")
 	elsif $position[1]<0 then
-		init_ball(true)
-		sfx(17,"F-5")
+#		init_ball(true)
+#		sfx(17,"F-5")
 	end
 end
 
@@ -249,7 +265,7 @@ end
 
 def receive_timing_diff
 	return nil if $velocity[1]>=0
-	threshold=TableDepth/8
+	threshold=TableDepth/4
 	diff=$position[1]
 	return nil if diff.abs>=threshold
 	return -diff/threshold
